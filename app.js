@@ -8,9 +8,9 @@ var app = express();
 var port = 3000;
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(__dirname + '/web'));
+app.use(express.static(__dirname + '/public'));
 
 /*
  * Routes
