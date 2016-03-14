@@ -1,0 +1,26 @@
+{
+  "name": "multi-party-text-chat",
+  "version": "1.0.0",
+  "description": "Multi-party text chat using opentok.js text chat",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrice727/multi-party-text-chat.git"
+  },
+  "author": "adrice727@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrice727/multi-party-text-chat/issues"
+  },
+  "homepage": "https://github.com/adrice727/multi-party-text-chat#readme",
+  "dependencies": {
+    "axios": "^0.9.1",
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "hanuman-js": "^0.4.0",
+    "opentok": "^2.3.0"
+  }
+}

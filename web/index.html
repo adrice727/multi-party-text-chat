@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>OpenTok TextChat demo</title>
+    <link rel="stylesheet" href="./css/opentok-textchat.css" />
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script src="dist/opentok-text-chat.js"></script>
+    <style>
+      html {
+        font-size: 14pt;
+      }
+
+      #chat {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 50%;
+        overflow: hidden;
+        font-size: 12pt;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="connected-as">
+      <button onclick="connect(tokenAlice);">Connect as Alice</button>
+      <button onclick="connect(tokenBob);">Connect as Bob</button>
+    </section>
+    <section id="chat"></section>
+    <script>
+      // Use your OpenTok dashboard [1] to generate projects a sessionId and
+      // a couple of tokens for Alice and Bob. Don't forget to include data with
+      // the names for Alice and Bob.
+      //
+      // [1] https://dashboard.tokbox.com/
+      var sessionId = '';
+      var tokenAlice = '';
+      var tokenBob = '';
+
+      // Add here your API key
+      var apiKey = '';
+    
+      // Although you need a initialized session, the ChatWidget does not need
+      // this session to be connected. It will connect the chat to the session
+      // automatically once the session connects.
+      var session = OT.initSession(apiKey, sessionId);
+      var chatWidget = new OTSolution.TextChat.ChatWidget({
+        session: session,
+        container: '#chat'
+      });
+
+      function connect(token) {
+        disableButtons();
+        session.connect(token, function (err) {
+          if (!err) {
+            showConnection();
+          }
+          else {
+            console.error(err);
+            enableButtons();
+          }
+        });
+      }
+
+      function showConnection() {
+        var connectedAs = document.getElementById('connected-as');
+        connectedAs.textContent = 'Connected as ' + session.connection.data;
+      }
+
+      function disableButtons() {
+        setButtons(false);
+      }
+
+      function enableButtons() {
+        setButtons(true);
+      }
+
+      function setButtons(isEnabled) {
+        var connectedAs = document.getElementById('connected-as');
+        var buttons = connectedAs.querySelectorAll('button');
+        buttons = Array.prototype.slice.call(buttons);
+        buttons.forEach(function (button) { button.disabled = !isEnabled; });
+      }
+
+    </script>
+  </body>
+</html>
