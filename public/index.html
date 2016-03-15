@@ -28,11 +28,13 @@
         .connection-status h2 {
             font-family: 'Muli', sans-serif;
             padding: 20px;
-            color: #81C1D5;
+            color: #09C;
             font-weight: 300;
         }
         
-        
+        .connection-status h2 .error {
+            color: red;
+        }
         
         .modal-container {
             height: 175px;
@@ -77,6 +79,7 @@
 
     <section class="connection-status">
         <h2 id="connectedAs"></h2>
+        <h2 id="connectionError" class="error"></h2>
     </section>
     <section id="chat"></section>
 
@@ -93,8 +96,8 @@
     <script src="js/api.js"></script>
 
     <script>
+        
         function show() {
-
             elements = Array.prototype.slice.call(arguments);
 
             elements.forEach(function(element) {
@@ -103,75 +106,76 @@
         };
 
         function hide() {
-
             elements = Array.prototype.slice.call(arguments);
 
             elements.forEach(function(element) {
                 element.classList.add('hidden');
             });
         };
+        
+        function setText(id, text) {
+            document.getElementById(id).innerHTML = text;
+        };
 
         // Fetch session data from back end
-        function init() {
+        function init(name) {
             api.getSessionData()
                 .then(function(response) {
-                    var sessionData = H.get('data', response);
-                    initSession(H.get('data', response));
+                    initSession(H.get('data', response), name);
                 });
         };
 
-        function initSession(sessionData) {
+        function initSession(sessionData, name) {
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
             // automatically once the session connects.
-            var session = OT.initSession(sessionData.apiKey, sessionData.session);
+            var session = OT.initSession(H.get('apiKey', sessionData), H.get('session', sessionData));
+            console.log('here oo ', session);
             var chatWidget = new OTSolution.TextChat.ChatWidget({
                 session: session,
                 container: '#chat'
             });
 
-            connect(session, sessionData.token);
+            connect(session, H.get('token', sessionData), name);
 
         };
 
-        function connect(session, token) {
-            disableButtons();
+        function connect(session, token, name) {
             session.connect(token, function(err) {
                 if (!err) {
-                    // showConnection();
+                    setText('connectedAs', ['Connected as', name].join(' '));
                 } else {
                     console.error(err);
-                    // enableButtons();
+                    setText('connectionError', 'Ruh roh. Please refresh the page.');
                 }
             });
         }
 
-        function showConnection() {
-            var connectedAs = document.getElementById('connected-as');
-            connectedAs.textContent = 'Connected as ' + session.connection.data;
-        }
+        // function showConnection() {
+        //     var connectedAs = document.getElementById('connected-as');
+        //     connectedAs.textContent = 'Connected as ' + session.connection.data;
+        // }
 
-        function disableButtons() {
-            setButtons(false);
-        }
+        // function disableButtons() {
+        //     setButtons(false);
+        // }
 
-        function enableButtons() {
-            setButtons(true);
-        }
+        // function enableButtons() {
+        //     setButtons(true);
+        // }
 
-        function setButtons(isEnabled) {
-            var connectedAs = document.getElementById('connected-as');
-            var buttons = connectedAs.querySelectorAll('button');
-            buttons = Array.prototype.slice.call(buttons);
-            buttons.forEach(function(button) {
-                button.disabled = !isEnabled;
-            });
-        }
+        // function setButtons(isEnabled) {
+        //     var connectedAs = document.getElementById('connected-as');
+        //     var buttons = connectedAs.querySelectorAll('button');
+        //     buttons = Array.prototype.slice.call(buttons);
+        //     buttons.forEach(function(button) {
+        //         button.disabled = !isEnabled;
+        //     });
+        // }
 
         function startChatting(name) {
             hide(document.getElementById('modal'));
-            document.getElementById('connectedAs').innerHTML = ['Connected as', name].join(' ');
-            init();
+            init(name);
         }
 
         function setUserName() {
