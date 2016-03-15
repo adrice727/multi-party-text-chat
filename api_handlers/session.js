@@ -6,10 +6,7 @@ const OpenTok = require('opentok');
 const Promise = require('bluebird');
 
 // Opentok
-const apiAccess = {
-    key: '45397062',
-    secret: '1a3bee9140e9e13f591294134d0b16f3cd9e38d5'
-};
+const apiAccess = {key: '45397062', secret: '1a3bee9140e9e13f591294134d0b16f3cd9e38d5'};
 const opentok = new OpenTok(apiAccess.key, apiAccess.secret);
 
 // Helper functions
@@ -35,7 +32,7 @@ const generateCallback = (res, err) => {
 const _session = new Map();
 
 // Helper methods
-const createSession = (cb) => {
+const createSession = () => {
 
     return new Promise((resolve, reject) => {
 
@@ -48,7 +45,7 @@ const createSession = (cb) => {
             let sessionData = {
                 apiKey: H.get(['ot', 'apiKey'], session),
                 session: H.get(['sessionId'], session)
-            };
+            };           
            
             resolve(sessionData);
         });
@@ -61,35 +58,25 @@ const createToken = sessionData => {
     let expireTime = (Date.now() / 1000 | 0) + (60 * 60 * 24 * 30);
     let role = 'publisher';
        
-    let session = H.get(['sessionId'], sessionData);
-    let apiKey = H.get(['apiKey'], sessionData);
-    
-    let token = opentok.generateToken(session, {
+    let token = opentok.generateToken(sessionData.session, {
         role,
         expireTime
     });
 
-    let things =  {
-        apiKey,
-        session,
-        token
+    return {
+        session: sessionData.session,
+        apiKey: sessionData.apiKey,
+        token: token
     };
     
-    console.log('PXPXPXP', things);
-    return things;
-
 };
 
 exports.createToken = (req, res, next) => {
 
     createSession()
         .then(session => {
-            let sessionData = createToken(session);
-            console.log('PXPXPP', sessionData)
-            res.json(session);
-        })
-        .catch(function(error) {
-            res.status(500).send('Error occurred in generating token', error);
+            res.json(createToken(session));
+        }, err => {
+            res.status(500).send('Error occurred in generating token');
         });
-
 };

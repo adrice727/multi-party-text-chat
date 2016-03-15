@@ -48,53 +48,53 @@
       // Add here your API key
       var apiKey = '';
       
-    api.getSessionData()
-    .then(function(data){
-        _sessionId = H.get('session', data);
-        _token = H.get('token', data);
-    });
+    // api.getSessionData()
+    // .then(function(data){
+    //     _sessionId = H.get('session', data);
+    //     _token = H.get('token', data);
+    // });
     
-      // Although you need a initialized session, the ChatWidget does not need
-      // this session to be connected. It will connect the chat to the session
-      // automatically once the session connects.
-      var session = OT.initSession(apiKey, sessionId);
-      var chatWidget = new OTSolution.TextChat.ChatWidget({
-        session: session,
-        container: '#chat'
-      });
+    //   // Although you need a initialized session, the ChatWidget does not need
+    //   // this session to be connected. It will connect the chat to the session
+    //   // automatically once the session connects.
+    //   var session = OT.initSession(apiKey, sessionId);
+    //   var chatWidget = new OTSolution.TextChat.ChatWidget({
+    //     session: session,
+    //     container: '#chat'
+    //   });
 
-      function connect(token) {
-        disableButtons();
-        session.connect(token, function (err) {
-          if (!err) {
-            showConnection();
-          }
-          else {
-            console.error(err);
-            enableButtons();
-          }
-        });
-      }
+    //   function connect(token) {
+    //     disableButtons();
+    //     session.connect(token, function (err) {
+    //       if (!err) {
+    //         showConnection();
+    //       }
+    //       else {
+    //         console.error(err);
+    //         enableButtons();
+    //       }
+    //     });
+    //   }
 
-      function showConnection() {
-        var connectedAs = document.getElementById('connected-as');
-        connectedAs.textContent = 'Connected as ' + session.connection.data;
-      }
+    //   function showConnection() {
+    //     var connectedAs = document.getElementById('connected-as');
+    //     connectedAs.textContent = 'Connected as ' + session.connection.data;
+    //   }
 
-      function disableButtons() {
-        setButtons(false);
-      }
+    //   function disableButtons() {
+    //     setButtons(false);
+    //   }
 
-      function enableButtons() {
-        setButtons(true);
-      }
+    //   function enableButtons() {
+    //     setButtons(true);
+    //   }
 
-      function setButtons(isEnabled) {
-        var connectedAs = document.getElementById('connected-as');
-        var buttons = connectedAs.querySelectorAll('button');
-        buttons = Array.prototype.slice.call(buttons);
-        buttons.forEach(function (button) { button.disabled = !isEnabled; });
-      }
+    //   function setButtons(isEnabled) {
+    //     var connectedAs = document.getElementById('connected-as');
+    //     var buttons = connectedAs.querySelectorAll('button');
+    //     buttons = Array.prototype.slice.call(buttons);
+    //     buttons.forEach(function (button) { button.disabled = !isEnabled; });
+    //   }
       
     </script>
 </body>
