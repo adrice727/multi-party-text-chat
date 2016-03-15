@@ -25,6 +25,15 @@
             display: none;
         }
         
+        .connection-status h2 {
+            font-family: 'Muli', sans-serif;
+            padding: 20px;
+            color: #81C1D5;
+            font-weight: 300;
+        }
+        
+        
+        
         .modal-container {
             height: 175px;
             width: 350px;
@@ -66,9 +75,8 @@
     </div>
 
 
-    <section id="connected-as">
-        <button onclick="connect(tokenAlice);">Connect as Alice</button>
-        <button onclick="connect(tokenBob);">Connect as Bob</button>
+    <section class="connection-status">
+        <h2 id="connectedAs"></h2>
     </section>
     <section id="chat"></section>
 
@@ -79,7 +87,7 @@
 
     <!--Bower Components-->
     <script src="bower_components/axios/dist/axios.min.js"></script>
-    <script src="bower_components/hanuman-js/dist/hanuman.min.js"></script>
+    <script src="bower_components/hanuman-js/dist/hanuman.js"></script>
 
     <!--Modules-->
     <script src="js/api.js"></script>
@@ -106,15 +114,16 @@
         // Fetch session data from back end
         function init() {
             api.getSessionData()
-                .then(function(sessionData) {
-                    initSession(sessionData);
+                .then(function(response) {
+                    var sessionData = H.get('data', response);
+                    initSession(H.get('data', response));
                 });
         };
 
         function initSession(sessionData) {
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
-            // automatically once the session connects.z
+            // automatically once the session connects.
             var session = OT.initSession(sessionData.apiKey, sessionData.session);
             var chatWidget = new OTSolution.TextChat.ChatWidget({
                 session: session,
@@ -129,10 +138,10 @@
             disableButtons();
             session.connect(token, function(err) {
                 if (!err) {
-                    showConnection();
+                    // showConnection();
                 } else {
                     console.error(err);
-                    enableButtons();
+                    // enableButtons();
                 }
             });
         }
@@ -159,15 +168,16 @@
             });
         }
 
-        function startChatting() {
+        function startChatting(name) {
             hide(document.getElementById('modal'));
+            document.getElementById('connectedAs').innerHTML = ['Connected as', name].join(' ');
             init();
         }
 
-        function setUserName(e) {
+        function setUserName() {
             var userName = document.getElementById('userName').value;
             if (!!userName.length) {
-                startChatting();
+                startChatting(userName);
             }
             return false;
         }
