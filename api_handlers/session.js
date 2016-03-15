@@ -40,20 +40,30 @@ const createSession = () => {
 
     return new Promise((resolve, reject) => {
 
-        opentok.createSession(function(err, session) {
-            if (err) {
-                reject(err);
-            }
-            _session.set('session', session);
-            
-            let sessionData = {
-                apiKey: H.get(['ot', 'apiKey'], session),
-                session: H.get('sessionId', session)
-            };
-            
-            resolve(sessionData);
-        });
+        let existingSession = _session.get('session');
 
+        if (!!existingSession) {
+            
+            resolve(existingSession);
+            
+        } else {
+            
+            opentok.createSession(function(err, session) {
+                if (err) {
+                    reject(err);
+                }
+
+                let sessionData = {
+                    apiKey: H.get(['ot', 'apiKey'], session),
+                    session: H.get('sessionId', session)
+                };
+                
+                _session.set('session', sessionData);
+
+                resolve(sessionData);
+            });
+            
+        }
     });
 };
 
