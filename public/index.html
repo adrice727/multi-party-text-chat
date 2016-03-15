@@ -130,7 +130,7 @@
             // this session to be connected. It will connect the chat to the session
             // automatically once the session connects.
             var session = OT.initSession(H.get('apiKey', sessionData), H.get('session', sessionData));
-            console.log('here oo ', session);
+            
             var chatWidget = new OTSolution.TextChat.ChatWidget({
                 session: session,
                 container: '#chat'
