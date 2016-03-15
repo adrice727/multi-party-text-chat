@@ -6,17 +6,6 @@
     <title>OpenTok Multi-Party Text Chat</title>
     <link rel="stylesheet" href="css/opentok-textchat.css" />
 
-    <!--OpenTok & Text Chat Component-->
-    <script src="https://static.opentok.com/v2/js/opentok.min.js" defer></script>
-    <script src="js/components/opentok-text-chat.js" defer></script>
-
-    <!--Bower Components-->
-    <script src="bower_components/axios/dist/axios.min.js" defer></script>
-    <script src="bower_components/hanuman-js/dist/hanuman.min.js" defer></script>
-
-    <!--Modules-->
-    <script src="js/api.js" defer></script>
-
     <style>
         html {
             font-size: 14pt;
@@ -40,62 +29,75 @@
         <button onclick="connect(tokenBob);">Connect as Bob</button>
     </section>
     <section id="chat"></section>
-    <script defer>
-      
-      var _sessionId;
-      var _token;
 
-      // Add here your API key
-      var apiKey = '';
-      
-    // api.getSessionData()
-    // .then(function(data){
-    //     _sessionId = H.get('session', data);
-    //     _token = H.get('token', data);
-    // });
-    
-    //   // Although you need a initialized session, the ChatWidget does not need
-    //   // this session to be connected. It will connect the chat to the session
-    //   // automatically once the session connects.
-    //   var session = OT.initSession(apiKey, sessionId);
-    //   var chatWidget = new OTSolution.TextChat.ChatWidget({
-    //     session: session,
-    //     container: '#chat'
-    //   });
 
-    //   function connect(token) {
-    //     disableButtons();
-    //     session.connect(token, function (err) {
-    //       if (!err) {
-    //         showConnection();
-    //       }
-    //       else {
-    //         console.error(err);
-    //         enableButtons();
-    //       }
-    //     });
-    //   }
+    <!--OpenTok & Text Chat Component-->
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script src="js/components/opentok-text-chat.js"></script>
 
-    //   function showConnection() {
-    //     var connectedAs = document.getElementById('connected-as');
-    //     connectedAs.textContent = 'Connected as ' + session.connection.data;
-    //   }
+    <!--Bower Components-->
+    <script src="bower_components/axios/dist/axios.min.js"></script>
+    <script src="bower_components/hanuman-js/dist/hanuman.min.js"></script>
 
-    //   function disableButtons() {
-    //     setButtons(false);
-    //   }
+    <!--Modules-->
+    <script src="js/api.js"></script>
 
-    //   function enableButtons() {
-    //     setButtons(true);
-    //   }
+    <script>
+        // Fetch session data from back end
+        function init() {
+            api.getSessionData()
+                .then(function(sessionData) {
+                    initSession(sessionData);
+                });
+        };
 
-    //   function setButtons(isEnabled) {
-    //     var connectedAs = document.getElementById('connected-as');
-    //     var buttons = connectedAs.querySelectorAll('button');
-    //     buttons = Array.prototype.slice.call(buttons);
-    //     buttons.forEach(function (button) { button.disabled = !isEnabled; });
-    //   }
-      
+        function initSession(sessionData) {
+            // Although you need a initialized session, the ChatWidget does not need
+            // this session to be connected. It will connect the chat to the session
+            // automatically once the session connects.z
+            var session = OT.initSession(sessionData.apiKey, sessionData.session);
+            var chatWidget = new OTSolution.TextChat.ChatWidget({
+                session: session,
+                container: '#chat'
+            });
+
+            connect(session, sessionData.token);
+
+        };
+
+        function connect(session, token) {
+            disableButtons();
+            session.connect(token, function(err) {
+                if (!err) {
+                    showConnection();
+                } else {
+                    console.error(err);
+                    enableButtons();
+                }
+            });
+        }
+
+        function showConnection() {
+            var connectedAs = document.getElementById('connected-as');
+            connectedAs.textContent = 'Connected as ' + session.connection.data;
+        }
+
+        function disableButtons() {
+            setButtons(false);
+        }
+
+        function enableButtons() {
+            setButtons(true);
+        }
+
+        function setButtons(isEnabled) {
+            var connectedAs = document.getElementById('connected-as');
+            var buttons = connectedAs.querySelectorAll('button');
+            buttons = Array.prototype.slice.call(buttons);
+            buttons.forEach(function(button) {
+                button.disabled = !isEnabled;
+            });
+        }
     </script>
 </body>
 
