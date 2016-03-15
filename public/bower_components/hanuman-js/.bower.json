@@ -1,0 +1,13 @@
+{
+  "name": "hanuman-js",
+  "homepage": "https://github.com/adrice727/hanuman",
+  "_release": "01c956da72",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "01c956da72241fb32c973409f6141c1443629295"
+  },
+  "_source": "git://github.com/adrice727/hanuman.git",
+  "_target": "*",
+  "_originalSource": "hanuman-js"
+}

@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>OpenTok TextChat demo</title>
-    <link rel="stylesheet" href="./css/opentok-textchat.css" />
-    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
-    <script src="dist/opentok-text-chat.js"></script>
-    <style>
-      html {
-        font-size: 14pt;
-      }
 
-      #chat {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: 50%;
-        overflow: hidden;
-        font-size: 12pt;
-      }
+<head>
+    <meta charset="UTF-8" />
+    <title>OpenTok Multi-Party Text Chat</title>
+    <link rel="stylesheet" href="css/opentok-textchat.css" />
+
+    <!--OpenTok & Text Chat Component-->
+    <script src="https://static.opentok.com/v2/js/opentok.min.js" defer></script>
+    <script src="js/components/opentok-text-chat.js" defer></script>
+
+    <!--Bower Components-->
+    <script src="bower_components/axios/dist/axios.min.js" defer></script>
+    <script src="bower_components/hanuman-js/dist/hanuman.min.js" defer></script>
+
+    <!--Modules-->
+    <script src="js/api.js" defer></script>
+
+    <style>
+        html {
+            font-size: 14pt;
+        }
+        
+        #chat {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 50%;
+            overflow: hidden;
+            font-size: 12pt;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <section id="connected-as">
-      <button onclick="connect(tokenAlice);">Connect as Alice</button>
-      <button onclick="connect(tokenBob);">Connect as Bob</button>
+        <button onclick="connect(tokenAlice);">Connect as Alice</button>
+        <button onclick="connect(tokenBob);">Connect as Bob</button>
     </section>
     <section id="chat"></section>
-    <script>
-      // Use your OpenTok dashboard [1] to generate projects a sessionId and
-      // a couple of tokens for Alice and Bob. Don't forget to include data with
-      // the names for Alice and Bob.
-      //
-      // [1] https://dashboard.tokbox.com/
-      var sessionId = '';
-      var tokenAlice = '';
-      var tokenBob = '';
+    <script defer>
+      
+      var _sessionId;
+      var _token;
 
       // Add here your API key
       var apiKey = '';
+      
+    api.getSessionData()
+    .then(function(data){
+        _sessionId = H.get('session', data);
+        _token = H.get('token', data);
+    });
     
       // Although you need a initialized session, the ChatWidget does not need
       // this session to be connected. It will connect the chat to the session
@@ -82,7 +95,8 @@
         buttons = Array.prototype.slice.call(buttons);
         buttons.forEach(function (button) { button.disabled = !isEnabled; });
       }
-
+      
     </script>
-  </body>
+</body>
+
 </html>

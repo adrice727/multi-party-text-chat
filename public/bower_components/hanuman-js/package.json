@@ -1,0 +1,36 @@
+{
+  "name": "hanuman-js",
+  "version": "0.4.0",
+  "description": "A small, functional, JavaScript helper library",
+  "main": "dist/hanuman.min.js",
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015-script": "^1.0.0",
+    "chai": "^3.5.0",
+    "uglify-js": "^2.6.1"
+  },
+  "scripts": {
+    "lint": "eslint ./src/hanuman.js",
+    "build:babel": "babel -d ./dist/ ./src/",
+    "build:min": "uglifyjs ./dist/hanuman.js -o ./dist/hanuman.min.js",
+    "build": "npm run build:babel && npm run build:min && npm run test",
+    "test": "mocha test/test.js -R nyan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrice727/hanuman.git"
+  },
+  "author": "adrice727@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrice727/hanuman/issues"
+  },
+  "homepage": "https://github.com/adrice727/hanuman#readme",
+  "keywords": [
+    "functional",
+    "util",
+    "utility",
+    "helper",
+    "monkey"
+  ]
+}

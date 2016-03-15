@@ -1,0 +1,23 @@
+{
+  "name": "multi-party-text-chat",
+  "description": "Multi-party text chat using opentok.js text chat",
+  "main": "app.js",
+  "authors": [
+    "adrice727@gmail.com"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/adrice727/multi-party-text-chat",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "axios": "^0.9.1",
+    "hanuman-js": "*"
+  }
+}
