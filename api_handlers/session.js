@@ -6,7 +6,10 @@ const OpenTok = require('opentok');
 const Promise = require('bluebird');
 
 // Opentok
-const apiAccess = {key: '45397062', secret: '1a3bee9140e9e13f591294134d0b16f3cd9e38d5'};
+const apiAccess = {
+    key: '45397062',
+    secret: '1a3bee9140e9e13f591294134d0b16f3cd9e38d5'
+};
 const opentok = new OpenTok(apiAccess.key, apiAccess.secret);
 
 // Helper functions
@@ -32,6 +35,7 @@ const generateCallback = (res, err) => {
 const _session = new Map();
 
 // Helper methods
+
 const createSession = () => {
 
     return new Promise((resolve, reject) => {
@@ -44,9 +48,9 @@ const createSession = () => {
             
             let sessionData = {
                 apiKey: H.get(['ot', 'apiKey'], session),
-                session: H.get(['sessionId'], session)
-            };           
-           
+                session: H.get('sessionId', session)
+            };
+            
             resolve(sessionData);
         });
 
@@ -57,18 +61,21 @@ const createToken = sessionData => {
 
     let expireTime = (Date.now() / 1000 | 0) + (60 * 60 * 24 * 30);
     let role = 'publisher';
-       
-    let token = opentok.generateToken(sessionData.session, {
+
+    let session = H.get('session', sessionData);
+    let apiKey = H.get('apiKey')(sessionData);
+
+    let token = opentok.generateToken(session, {
         role,
         expireTime
     });
 
     return {
-        session: sessionData.session,
-        apiKey: sessionData.apiKey,
-        token: token
+        session,
+        apiKey,
+        token
     };
-    
+
 };
 
 exports.createToken = (req, res, next) => {
