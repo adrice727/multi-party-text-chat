@@ -25,6 +25,20 @@
             display: none;
         }
         
+        .btn {
+            font-family: 'Muli', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 16px;
+            padding: 10px 20px;
+            margin: 15px 0;
+            background: #09C;
+            color: white;
+            border: 1px solid;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
         .connection-status h2 {
             font-family: 'Muli', sans-serif;
             padding: 20px;
@@ -72,6 +86,7 @@
             <h2>What's your name?</h2>
             <form id="getUserName" onsubmit="return setUserName()">
                 <input id="userName" class="user-name" type="text" placeholder="Jason">
+                <button id="setUser" class="btn" onclick="setUserName()">start chatting</submit>
             </form>
         </div>
     </div>
