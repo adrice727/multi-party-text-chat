@@ -167,48 +167,49 @@ let words = [
     'easy',
     'lol',
     'Hurt',
-    'giraffe', 
-    'code', 
-    'homes', 
-    'killer', 
-    'ice', 
-    'fire', 
-    'ice cream', 
-    'hangman', 
-    'destroy', 
-    'computer', 
-    'book', 
-    'dictionary', 
-    'technology', 
-    'power', 
-    'thunder', 
-    'controller', 
-    'dexterity', 
-    'keyboard', 
-    'thunderous', 
-    'blizzard', 
-    'hazardous', 
-    'algorithm', 
-    'destruction', 
-    'operation', 
-    'assignment', 
+    'giraffe',
+    'code',
+    'homes',
+    'killer',
+    'ice',
+    'fire',
+    'ice cream',
+    'hangman',
+    'destroy',
+    'computer',
+    'book',
+    'dictionary',
+    'technology',
+    'power',
+    'thunder',
+    'controller',
+    'dexterity',
+    'keyboard',
+    'thunderous',
+    'blizzard',
+    'hazardous',
+    'algorithm',
+    'destruction',
+    'operation',
+    'assignment',
     'despicable'
 ];
 
-
-
 let count = 0;
 
-function getRandomPhrase () {
-    
-    let randomIndex = Math.min(Math.random() * words.length | 0, 29);
+function getRandomPhrase() {
 
-    return [words[randomIndex()], words[randomIndex()], words[randomIndex()]].join(' ');
-    
+    let randomIndex = () => Math.min(Math.random() * words.length | 0, 29);
+    return `${words[randomIndex()]} ${words[randomIndex()]} ${words[randomIndex()]} ${Date.now()}`;
 }
 
 function getRandomInterval() {
     return Math.random() * 20 * 1000;
+}
+
+function postMessage() {
+    document.getElementsByClassName('ot-composer')[0].value = getRandomPhrase();
+    document.getElementsByClassName('ot-send-button')[0].click();
 }
 
 // function onResourceReceived(response) {
@@ -226,8 +227,20 @@ function onCompletion(status) {
         document.getElementById('userName').value = firstNames[count];
         setUserName();
 
-        let interval = getRandomInterval();
-        setTimeout(postMessage(), interval);
+        function readyToChat() {
+            if (!!window.readyToChat) {
+                startChatting();
+            } else {
+                setTimeout(readyToChat, 500);
+            }
+        }
+
+        function startChatting() {
+            let interval = getRandomInterval();
+            setInterval(postMessage(), interval);
+        }
+
+        setTimeout(readyToChat, 500);
 
     });
 
@@ -236,7 +249,7 @@ function onCompletion(status) {
     if (count >= instances) {
         setTimeout(() => {
             phantom.exit();
-        }, 1000 * 60 * 2);
+        }, 1000 * 60 * 2); // exit 2 minutes after last page opened
     }
 }
 
