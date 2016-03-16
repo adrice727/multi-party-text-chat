@@ -18,10 +18,9 @@ function onResourceRequested(requestData, networkRequest) {
     console.log((Date.now() - startTime) + ':Request:' + requestData.url);
 }
 
-function onCompletion(status, page) {
-    console.log(status);
-    ++count;
-    page.evaluate(function() {
+function onCompletion(status, page, index) {
+
+    page.evaluate(function(index) {
 
         // 152 names
         var firstNames = [
@@ -213,7 +212,6 @@ function onCompletion(status, page) {
             'despicable'
         ];
 
-        var count = window.location.search.split('=')[1];
         document.getElementById('userName').value = firstNames[count];
         document.getElementById('setUser').click();
 
@@ -249,15 +247,23 @@ function onCompletion(status, page) {
 
         setTimeout(readyToChat, 500);
 
-    });
+    }, index);
 
 
-
-    if (count >= instances) {
+    if (index >= instances) {
         setTimeout(function() {
             phantom.exit();
         }, 1000 * 60 * 2); // exit 2 minutes after last page opened
     }
+}
+
+function openPage(page, index) {
+    page.open(url + '?i=' + index, function(status) {
+        ++count;
+        setTimeout(function() {
+            onCompletion(status, page, index);
+        }, 2000);
+    }); //Append i to allow tracking
 }
 
 var startTime = Date.now();
@@ -269,5 +275,5 @@ for (var i = 0; i < instances; i++) {
     };
     page.onResourceReceived = onResourceReceived;
     page.onResourceRequested = onResourceRequested;
-    page.open(url + '?i=' + i, function(status){ setTimeout(function(){onCompletion(status, page);}, 2000);}); //Append i to allow tracking
+    openPage(page, i);
 }
