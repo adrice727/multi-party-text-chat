@@ -12,31 +12,11 @@ const apiAccess = {
 };
 const opentok = new OpenTok(apiAccess.key, apiAccess.secret);
 
-// Helper functions
-
-const generateCallback = (res, err) => {
-
-    let status = err && err.status ? err.status : 500;
-    let errorMessage = err && err.message ? err.messsage : 'An error occured';
-
-    return {
-        err: function(err) {
-            res.status(status);
-            res.send(`${errorMessage}: ${err}`);
-        },
-        success: function(data) {
-            res.json(data);
-        }
-    };
-
-};
-
-// Session
+// Store a single session
 const _session = new Map();
 
-// Helper methods
-
-const createSession = () => {
+// Helper functions
+const createSession = (userName) => {
 
     return new Promise((resolve, reject) => {
 
@@ -55,7 +35,8 @@ const createSession = () => {
 
                 let sessionData = {
                     apiKey: H.get(['ot', 'apiKey'], session),
-                    session: H.get('sessionId', session)
+                    session: H.get('sessionId', session),
+                    userName
                 };
                 
                 _session.set('session', sessionData);
@@ -73,11 +54,13 @@ const createToken = sessionData => {
     let role = 'publisher';
 
     let session = H.get('session', sessionData);
-    let apiKey = H.get('apiKey')(sessionData);
+    let apiKey = H.get('apiKey', sessionData);
+    let data = H.get('userName', sessionData); // Chat widget uses token's data attribute to set user's name
 
     let token = opentok.generateToken(session, {
         role,
-        expireTime
+        expireTime,
+        data
     });
 
     return {
@@ -89,8 +72,10 @@ const createToken = sessionData => {
 };
 
 exports.createToken = (req, res, next) => {
+    
+    let userName = H.get(['body', 'name'], req);
 
-    createSession()
+    createSession(userName)
         .then(session => {
             res.json(createToken(session));
         }, err => {
