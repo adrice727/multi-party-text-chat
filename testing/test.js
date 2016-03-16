@@ -18,10 +18,10 @@ function onResourceRequested(requestData, networkRequest) {
     console.log((Date.now() - startTime) + ':Request:' + requestData.url);
 }
 
-function onCompletion(status) {
+function onCompletion(status, page) {
     console.log(status);
     ++count;
-    pages[count].evaluate(function() {
+    page.evaluate(function() {
 
         // 152 names
         var firstNames = [
@@ -269,5 +269,5 @@ for (var i = 0; i < instances; i++) {
     };
     page.onResourceReceived = onResourceReceived;
     page.onResourceRequested = onResourceRequested;
-    page.open(url + '?i=' + i, onCompletion); //Append i to allow tracking
+    page.open(url + '?i=' + i, function(status){ setTimeout(function(){onCompletion(status, page);}, 2000);}); //Append i to allow tracking
 }
