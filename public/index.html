@@ -119,7 +119,7 @@
 
         // Fetch session data from back end
         function init(name) {
-            api.getSessionData()
+            api.getSessionData(name)
                 .then(function(response) {
                     initSession(H.get('data', response), name);
                 });
@@ -133,7 +133,8 @@
             
             var chatWidget = new OTSolution.TextChat.ChatWidget({
                 session: session,
-                container: '#chat'
+                container: '#chat',
+                username: name
             });
 
             connect(session, H.get('token', sessionData), name);
