@@ -62,6 +62,8 @@ const createToken = sessionData => {
         expireTime,
         data
     });
+    
+    console.log('token created for ' + data);
 
     return {
         session,
