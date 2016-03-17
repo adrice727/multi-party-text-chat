@@ -16,7 +16,7 @@ const opentok = new OpenTok(apiAccess.key, apiAccess.secret);
 const _session = new Map();
 
 // Helper functions
-const createSession = (userName) => {
+const createSession = userName => {
 
     return new Promise((resolve, reject) => {
 
@@ -24,7 +24,9 @@ const createSession = (userName) => {
 
         if (!!existingSession) {
             
-            resolve(existingSession);
+            let sessionData = Object.assign({userName}, existingSession);
+            
+            resolve(Object.assign({userName}, existingSession));
             
         } else {
             
@@ -36,12 +38,12 @@ const createSession = (userName) => {
                 let sessionData = {
                     apiKey: H.get(['ot', 'apiKey'], session),
                     session: H.get('sessionId', session),
-                    userName
                 };
                 
                 _session.set('session', sessionData);
+                
+                resolve(Object.assign({userName}, sessionData));
 
-                resolve(sessionData);
             });
             
         }
@@ -49,7 +51,7 @@ const createSession = (userName) => {
 };
 
 const createToken = sessionData => {
-
+    
     let expireTime = (Date.now() / 1000 | 0) + (60 * 60 * 24 * 30);
     let role = 'publisher';
 
@@ -63,8 +65,6 @@ const createToken = sessionData => {
         data
     });
     
-    console.log('token created for ' + data);
-
     return {
         session,
         apiKey,
@@ -76,7 +76,7 @@ const createToken = sessionData => {
 exports.createToken = (req, res, next) => {
     
     let userName = H.get(['body', 'name'], req);
-
+    
     createSession(userName)
         .then(session => {
             res.json(createToken(session));
