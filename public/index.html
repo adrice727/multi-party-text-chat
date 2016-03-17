@@ -137,15 +137,14 @@
             
             
             var onDataReceived = function(response){
-                initSession(Object.assign({userName:userName}, response));
+                response.userName = userName;
+                initSession(response);
             }
             
             api.getSessionData(userName, onDataReceived);
         };
 
-        function initSession(sessionData) {
-            
-            console.log('initSession with ' + JSON.stringify(sessionData));
+        function initSession(sessionData) { 
             
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
@@ -168,12 +167,13 @@
 
         function connect(sessionData) {
             
-            console.log('connect with ' + sessionData);
-            
             var session = H.get('session', sessionData);
             var userName = H.get('userName', sessionData);
-            var token = H.get('token', sessionData)
+            var token = H.get('token', sessionData);
             
+            // This is where phantom is throwing an error
+            // TypeError: undefined is not a constructor (evaluating 'session.connect')
+                   
             session.connect(token, function(err) {
                 if (!err) {
                     setText('connectedAs', ['Connected as', userName].join(' '));
@@ -188,14 +188,11 @@
         
         function readyToChat(){
             
-            console.log('ready to chat called');
-            
             if ( !!document.getElementsByClassName('ot-composer') ) {
                 setTimeout(function(){
                     var readyElement = document.createElement('div');
                     readyElement.setAttribute('id', 'readyToChat');
                     document.body.appendChild(readyElement);
-                    console.log('ready to chat element added to page');
                 }, 500)
             } else {
                 readyToChat();
@@ -203,7 +200,7 @@
             
         }
 
-        function initChat(userName) {
+        function startChatting(userName) {
             
             hide(document.getElementById('modal'));
             
@@ -214,10 +211,10 @@
         function setUserName() {
             var userName = document.getElementById('userName').value;
             if (!!userName.length) {
+                // Being called manually in phantom
                 // startChatting(userName);
             }
-            return userName;
-            // return false;
+            return false;
         }
     </script>
 </body>

@@ -19,7 +19,7 @@ function onResourceRequested(requestData, networkRequest) {
 
 function onCompletion(status, page, index) {
 
-    page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js', function() {
+    page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js', function() {
         page.evaluate(function(index) {
            
             // 152 names
@@ -214,11 +214,11 @@ function onCompletion(status, page, index) {
 
             function start() {
 
-                if (!window.initChat) {
+                if (!window.startChatting) {
                     setTimeout(start, 2000);
                 } else {
 
-                    window.initChat(firstNames[index]);
+                    window.startChatting(firstNames[index]);
 
                     function readyToChat() {
                         if (!!$('#readyToChat')) {
