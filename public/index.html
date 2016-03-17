@@ -106,7 +106,7 @@
     <script src="bower_components/axios/dist/axios.min.js"></script>
     <script src="bower_components/hanuman-js/dist/hanuman.js"></script>
     <script src="bower_components/es6-promise/es6-promise.min.js"></script>
-    <script src="bower_components/q/q.js"></script>
+    <!--<script src="bower_components/q/q.js"></script>-->
     <!--<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>-->
 
     <!--Modules-->
@@ -137,22 +137,17 @@
         // Fetch session data from back end
         function init(userName) {
             
-            console.log('init called with ', userName);
-            
-            var deferred = Q.defer();
+            console.log('init with ' + userName);
             
             api.getSessionData(userName)
                 .then(function(response) {
-                    deferred.resolve(Object.assign({userName:userName}, H.get('data', response)));
+                    initSession(Object.assign({userName:userName}, H.get('data', response)))
                 });
-                
-            return deferred.promise;
         };
 
         function initSession(sessionData) {
-            console.log('init session called with ', sessionData);
             
-            var deferred = Q.defer();
+            console.log('initSession with ' + sessionData);
             
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
@@ -169,15 +164,14 @@
                 username: H.get('userName', sessionData)
             });
              
-            deferred.resolve({session:session, token: H.get('token', sessionData), userName: H.get('userName', sessionData)});
+            connect({session:session, token: H.get('token', sessionData), userName: H.get('userName', sessionData)});
             
-            return deferred.promise;
-
         };
 
         function connect(sessionData) {
             
-            var deferred = Q.defer();
+            console.log('connect with ' + sessionData);
+            
             var session = H.get('session', sessionData);
             var userName = H.get('userName', sessionData);
             var token = H.get('token', sessionData)
@@ -185,23 +179,25 @@
             session.connect(token, function(err) {
                 if (!err) {
                     setText('connectedAs', ['Connected as', userName].join(' '));
-                    deferred.resolve({status: 'connected'});
+                    readyToChat();
                 } else {
                     console.error(err);
                     setText('connectionError', 'Ruh roh. Please refresh the page.');
                 }
             });
             
-            return deferred.promise;
         }
         
         function readyToChat(){
+            
+            console.log('ready to chat called');
             
             if ( !!document.getElementsByClassName('ot-composer') ) {
                 setTimeout(function(){
                     var readyElement = document.createElement('div');
                     readyElement.setAttribute('id', 'readyToChat');
                     document.body.appendChild(readyElement);
+                    console.log('ready to chat element added to page');
                 }, 500)
             } else {
                 readyToChat();
@@ -211,17 +207,10 @@
 
         function startChatting(userName) {
             
-            var deferred = Q.defer();
-            
             hide(document.getElementById('modal'));
             
             init(userName)
-            .then(initSession)
-            .then(connect)
-            .then(readyToChat)
-            .fail(deferred.reject);
-            
-            return deferred.promise;
+
         }
 
         function setUserName() {
