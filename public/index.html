@@ -161,6 +161,7 @@
             session.connect(token, function(err) {
                 if (!err) {
                     setText('connectedAs', ['Connected as', name].join(' '));
+                    setTimeout(function(){window.readyToChat = true}, 2000);
                 } else {
                     console.error(err);
                     setText('connectionError', 'Ruh roh. Please refresh the page.');
