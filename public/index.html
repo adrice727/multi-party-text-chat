@@ -103,11 +103,11 @@
     <script src="js/components/opentok-text-chat.js"></script>
 
     <!--Bower Components-->
-    <script src="bower_components/axios/dist/axios.min.js"></script>
+    <!--<script src="bower_components/superagent/lib/axios.min.js"></script>-->
     <script src="bower_components/hanuman-js/dist/hanuman.js"></script>
     <script src="bower_components/es6-promise/es6-promise.min.js"></script>
     <!--<script src="bower_components/q/q.js"></script>-->
-    <!--<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
 
     <!--Modules-->
     <script src="js/api.js"></script>
@@ -137,17 +137,17 @@
         // Fetch session data from back end
         function init(userName) {
             
-            console.log('init with ' + userName);
             
-            api.getSessionData(userName)
-                .then(function(response) {
-                    initSession(Object.assign({userName:userName}, H.get('data', response)))
-                });
+            var onDataReceived = function(response){
+                initSession(Object.assign({userName:userName}, response));
+            }
+            
+            api.getSessionData(userName, onDataReceived);
         };
 
         function initSession(sessionData) {
             
-            console.log('initSession with ' + sessionData);
+            console.log('initSession with ' + JSON.stringify(sessionData));
             
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
@@ -205,7 +205,7 @@
             
         }
 
-        function startChatting(userName) {
+        function initChat(userName) {
             
             hide(document.getElementById('modal'));
             
