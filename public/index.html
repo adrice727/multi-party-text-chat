@@ -106,7 +106,8 @@
     <script src="bower_components/axios/dist/axios.min.js"></script>
     <script src="bower_components/hanuman-js/dist/hanuman.js"></script>
     <script src="bower_components/es6-promise/es6-promise.min.js"></script>
-    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+    <script src="bower_components/q/q.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>-->
 
     <!--Modules-->
     <script src="js/api.js"></script>
@@ -138,20 +139,20 @@
             
             console.log('init called with ', userName);
             
-            var deferred = $.Deferred();
+            var deferred = Q.defer();
             
             api.getSessionData(userName)
                 .then(function(response) {
                     deferred.resolve(Object.assign({userName:userName}, H.get('data', response)));
                 });
                 
-            return deferred.promise();
+            return deferred.promise;
         };
 
         function initSession(sessionData) {
             console.log('init session called with ', sessionData);
             
-            var deferred = $.Deferred();
+            var deferred = Q.defer();
             
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
@@ -168,13 +169,15 @@
                 username: H.get('userName', sessionData)
             });
              
-            return deferred.resolve({session:session, token: H.get('token', sessionData), userName: H.get('userName', sessionData)});
+            deferred.resolve({session:session, token: H.get('token', sessionData), userName: H.get('userName', sessionData)});
+            
+            return deferred.promise;
 
         };
 
         function connect(sessionData) {
             
-            var deferred = $.Deferred();
+            var deferred = Q.defer();
             var session = H.get('session', sessionData);
             var userName = H.get('userName', sessionData);
             var token = H.get('token', sessionData)
@@ -189,12 +192,12 @@
                 }
             });
             
-            return deferred.promise();
+            return deferred.promise;
         }
 
         function startChatting(userName) {
             
-            var deferred = $.Deferred();
+            var deferred = Q.defer();
             
             hide(document.getElementById('modal'));
             
@@ -204,7 +207,7 @@
             .then(deferred.resolve)
             .fail(deferred.reject);
             
-            return deferred.promise();
+            return deferred.promise;
         }
 
         function setUserName() {
