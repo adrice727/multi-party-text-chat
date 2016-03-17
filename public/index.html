@@ -106,6 +106,7 @@
     <script src="bower_components/axios/dist/axios.min.js"></script>
     <script src="bower_components/hanuman-js/dist/hanuman.js"></script>
     <script src="bower_components/es6-promise/es6-promise.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
 
     <!--Modules-->
     <script src="js/api.js"></script>
@@ -133,52 +134,86 @@
         };
 
         // Fetch session data from back end
-        function init(name) {
-            api.getSessionData(name)
+        function init(userName) {
+            
+            console.log('init called with ', userName);
+            
+            var deferred = $.Deferred();
+            
+            api.getSessionData(userName)
                 .then(function(response) {
-                    initSession(H.get('data', response), name);
+                    deferred.resolve(Object.assign({userName:userName}, H.get('data', response)));
                 });
+                
+            return deferred.promise();
         };
 
-        function initSession(sessionData, name) {
+        function initSession(sessionData) {
+            console.log('init session called with ', sessionData);
+            
+            var deferred = $.Deferred();
+            
             // Although you need a initialized session, the ChatWidget does not need
             // this session to be connected. It will connect the chat to the session
             // automatically once the session connects.
             var session = OT.initSession(H.get('apiKey', sessionData), H.get('session', sessionData));
             
+            session.on('connectionCreated', function(event){
+               console.log('Another party has connected to the session'); 
+            });
+            
             var chatWidget = new OTSolution.TextChat.ChatWidget({
                 session: session,
                 container: '#chat',
-                username: name
+                username: H.get('userName', sessionData)
             });
-
-            connect(session, H.get('token', sessionData), name);
+             
+            return deferred.resolve({session:session, token: H.get('token', sessionData), userName: H.get('userName', sessionData)});
 
         };
 
-        function connect(session, token, name) {
+        function connect(sessionData) {
+            
+            var deferred = $.Deferred();
+            var session = H.get('session', sessionData);
+            var userName = H.get('userName', sessionData);
+            var token = H.get('token', sessionData)
+            
             session.connect(token, function(err) {
                 if (!err) {
-                    setText('connectedAs', ['Connected as', name].join(' '));
-                    setTimeout(function(){window.readyToChat = true}, 2000);
+                    setText('connectedAs', ['Connected as', userName].join(' '));
+                    deferred.resolve({status: 'connected'});
                 } else {
                     console.error(err);
                     setText('connectionError', 'Ruh roh. Please refresh the page.');
                 }
             });
+            
+            return deferred.promise();
         }
 
-        function startChatting(name) {
+        function startChatting(userName) {
+            
+            var deferred = $.Deferred();
+            
             hide(document.getElementById('modal'));
-            init(name);
+            
+            init(userName)
+            .then(initSession)
+            .then(connect)
+            .then(deferred.resolve)
+            .fail(deferred.reject);
+            
+            return deferred.promise();
         }
 
         function setUserName() {
             var userName = document.getElementById('userName').value;
             if (!!userName.length) {
-                startChatting(userName);
+                // startChatting(userName);
             }
-            return false;
+            return userName;
+            // return false;
         }
     </script>
 </body>
