@@ -216,8 +216,17 @@ function onCompletion(status, page, index) {
 
             $(function() {
 
-                $('userName').val(firstNames[index]);
-                $('setUser').click();
+                window.startChatting(firstNames[index]);
+                
+                function readyToChat () {
+                    if (!!$('#readyToChat')) {
+                        startChatting();
+                    } else {
+                        setTimeout(readyToChat, 1000);
+                    } 
+                }
+                
+                readyToChat();
 
                 function startChatting() {
                     var interval = getRandomInterval();
