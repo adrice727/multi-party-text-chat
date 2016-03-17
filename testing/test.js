@@ -21,9 +21,7 @@ function onCompletion(status, page, index) {
 
     page.includeJs('https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js', function() {
         page.evaluate(function(index) {
-            
-            // receiving the correct index and jQuery reference
-
+           
             // 152 names
             var firstNames = [
                 'Allison',
@@ -214,53 +212,56 @@ function onCompletion(status, page, index) {
                 'despicable'
             ];
 
-            $(function() {
+            function start() {
 
-                window.startChatting(firstNames[index]);
-                
-                function readyToChat () {
-                    if (!!$('#readyToChat')) {
-                        startChatting();
-                    } else {
-                        setTimeout(readyToChat, 1000);
-                    } 
+                if (!window.initChat) {
+                    setTimeout(start, 2000);
+                } else {
+
+                    window.initChat(firstNames[index]);
+
+                    function readyToChat() {
+                        if (!!$('#readyToChat')) {
+                            startChatting();
+                        } else {
+                            setTimeout(readyToChat, 1000);
+                        }
+                    }
+
+                    readyToChat();
+
+                    function startChatting() {
+                        var interval = Math.max(1000, getRandomInterval());
+                        setInterval(postMessage, interval);
+                    }
+
+                    function randomIndex() {
+                        return Math.min(Math.random() * words.length | 0, 29);
+                    };
+
+                    function getRandomPhrase() {
+                        return [words[randomIndex()], words[randomIndex()], words[randomIndex()], Date.now()].join(' ');
+                    }
+
+                    function getRandomInterval() {
+                        return Math.random() * 20 * 1000;
+                    }
+
+                    function postMessage() {
+                        $('textarea.ot-composer').val(getRandomPhrase());
+                        $('button.ot-send-button').click();
+                    }
                 }
-                
-                readyToChat();
 
-                function startChatting() {
-                    var interval = getRandomInterval();
-                    setInterval(postMessage, interval);
-                }
-
-                function randomIndex() {
-                    return Math.min(Math.random() * words.length | 0, 29);
-                };
-
-                function getRandomPhrase() {
-                    return [words[randomIndex()], words[randomIndex()], words[randomIndex()], Date.now()].join(' ');
-                }
-
-                function getRandomInterval() {
-                    return Math.random() * 20 * 1000;
-                }
-
-                function postMessage() {
-                    console.log('posting message in page ' + index);
-                    console.log('func?',window.readyToChat);
-                    $('textarea.ot-composer').val(getRandomPhrase());
-                    $('button.ot-send-button').click();
-                }
-
-                setTimeout(startChatting, 3000);
-            });
-
+            };
+            
+            start();
 
         }, index);
-    },index);
+    }, index);
 
     if (index >= instances - 1) {
-        var minutes = 1;
+        var minutes = 5;
         console.log('Phantom will exit in ' + minutes + ' minute(s)');
         setTimeout(function() {
             phantom.exit();
