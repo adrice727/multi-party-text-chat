@@ -1,0 +1,1 @@
+##### To run: `npm i && bower i && node app.js`
