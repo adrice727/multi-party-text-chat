@@ -86,7 +86,6 @@
             <h2>What's your name?</h2>
             <form id="getUserName" onsubmit="return setUserName()">
                 <input id="userName" class="user-name" type="text" placeholder="Jason">
-                <button id="setUser" class="btn" onclick="setUserName()">start chatting</submit>
             </form>
         </div>
     </div>
@@ -168,28 +167,6 @@
                 }
             });
         }
-
-        // function showConnection() {
-        //     var connectedAs = document.getElementById('connected-as');
-        //     connectedAs.textContent = 'Connected as ' + session.connection.data;
-        // }
-
-        // function disableButtons() {
-        //     setButtons(false);
-        // }
-
-        // function enableButtons() {
-        //     setButtons(true);
-        // }
-
-        // function setButtons(isEnabled) {
-        //     var connectedAs = document.getElementById('connected-as');
-        //     var buttons = connectedAs.querySelectorAll('button');
-        //     buttons = Array.prototype.slice.call(buttons);
-        //     buttons.forEach(function(button) {
-        //         button.disabled = !isEnabled;
-        //     });
-        // }
 
         function startChatting(name) {
             hide(document.getElementById('modal'));
